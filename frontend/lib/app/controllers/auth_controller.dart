@@ -22,17 +22,17 @@ class AuthController extends GetxController {
   late final TextEditingController nameController;
   late final TextEditingController confirmPasswordController;
   
-  // Form keys - use lazy initialization to prevent GlobalKey conflicts
+  // Form keys - create unique keys for each screen
   GlobalKey<FormState>? _loginFormKey;
   GlobalKey<FormState>? _signupFormKey;
   
   GlobalKey<FormState> get loginFormKey {
-    _loginFormKey ??= GlobalKey<FormState>();
+    _loginFormKey ??= GlobalKey<FormState>(debugLabel: 'loginForm');
     return _loginFormKey!;
   }
   
   GlobalKey<FormState> get signupFormKey {
-    _signupFormKey ??= GlobalKey<FormState>();
+    _signupFormKey ??= GlobalKey<FormState>(debugLabel: 'signupForm');
     return _signupFormKey!;
   }
 
@@ -104,14 +104,27 @@ class AuthController extends GetxController {
           currentUser.value = User.fromJson(response.user!);
         }
         
-        print('🏠 Navigating to dashboard...');
-        Get.offAllNamed(AppRoutes.dashboard);
+        // Show success message with loading
         Get.snackbar(
           'Success',
-          'Logged in successfully!',
+          'Logged in successfully! Redirecting...',
           backgroundColor: Colors.green,
           colorText: Colors.white,
+          duration: const Duration(milliseconds: 1200),
         );
+        
+        // Add a brief delay to show the success message
+        await Future.delayed(const Duration(milliseconds: 800));
+        
+        print('🏠 Navigating to dashboard...');
+        Get.offAllNamed(AppRoutes.dashboard);
+        
+        // Clean up the auth controller after successful login
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (Get.isRegistered<AuthController>()) {
+            Get.delete<AuthController>();
+          }
+        });
       } else {
         Get.snackbar(
           'Error',
@@ -206,9 +219,10 @@ class AuthController extends GetxController {
         // Always navigate to login after successful signup, regardless of auto-login
         Get.snackbar(
           'Success',
-          'Account created successfully! Please login with your credentials.',
+          'Account created successfully! Redirecting to login...',
           backgroundColor: Colors.green,
           colorText: Colors.white,
+          duration: const Duration(milliseconds: 1200),
         );
         
         // Clear only name and password fields, keep email for convenience
@@ -218,6 +232,12 @@ class AuthController extends GetxController {
         // Keep email prefilled: emailController.text already has the signup email
         
         print('✅ Signup successful, navigating to login...');
+        
+        // Add a brief delay to show the success message
+        await Future.delayed(const Duration(milliseconds: 800));
+        
+        // Reset form keys before navigation to prevent conflicts
+        resetFormKeys();
         
         // Use regular navigation to avoid controller disposal issues
         Get.toNamed(AppRoutes.login);
@@ -247,7 +267,7 @@ class AuthController extends GetxController {
       await StorageService.to.clearUserData();
       currentUser.value = null;
       clearAllForms();
-      Get.offAllNamed(AppRoutes.login);
+      resetFormKeys();
       
       Get.snackbar(
         'Success',
@@ -255,6 +275,14 @@ class AuthController extends GetxController {
         backgroundColor: Colors.green,
         colorText: Colors.white,
       );
+      
+      // Navigate to login and clean up the auth controller
+      Get.offAllNamed(AppRoutes.login);
+      
+      // Remove the controller to ensure fresh state
+      if (Get.isRegistered<AuthController>()) {
+        Get.delete<AuthController>();
+      }
     } catch (e) {
       debugPrint('Logout error: $e');
     }
@@ -266,11 +294,13 @@ class AuthController extends GetxController {
 
   void navigateToSignup() {
     clearLoginForm();
+    resetFormKeys(); // Reset form keys to prevent conflicts
     Get.toNamed(AppRoutes.signup);
   }
 
   void navigateToLogin() {
     clearSignupForm();
+    resetFormKeys(); // Reset form keys to prevent conflicts
     Get.toNamed(AppRoutes.login);
   }
 

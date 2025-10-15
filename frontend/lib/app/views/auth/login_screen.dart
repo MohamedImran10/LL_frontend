@@ -10,8 +10,10 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Use Get.put with permanent flag to prevent disposal during navigation
-    final authController = Get.put(AuthController(), permanent: true);
+    // Use Get.find() if exists, otherwise create new instance
+    final authController = Get.isRegistered<AuthController>() 
+        ? Get.find<AuthController>() 
+        : Get.put(AuthController());
     
     return Scaffold(
       backgroundColor: AppColors.white,
