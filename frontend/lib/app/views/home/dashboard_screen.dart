@@ -89,7 +89,7 @@ class DashboardScreen extends StatelessWidget {
                   crossAxisCount: 2,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
-                  childAspectRatio: 1.1, // Adjust aspect ratio to prevent overflow
+                  childAspectRatio: 1.2, // Increased aspect ratio to give more height
                   children: [
                     _buildFeatureCard(
                       context,
@@ -131,31 +131,34 @@ class DashboardScreen extends StatelessWidget {
                 ),
               ),
               
-              const SizedBox(height: 24),
+              const SizedBox(height: 16), // Reduced spacing
               
-              // Demo login info
+              // Demo login info - made more compact
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12), // Reduced padding
                 decoration: BoxDecoration(
                   color: AppColors.lightGrey,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       'Demo Information',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith( // Smaller text
                         fontWeight: FontWeight.w600,
                         color: AppColors.black,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 4),
                     Text(
                       'For demo purposes, use:\nEmail: demo@example.com\nPassword: demo123',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.grey,
                       ),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -177,7 +180,7 @@ class DashboardScreen extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16), // Reduced padding
         decoration: BoxDecoration(
           color: AppColors.lightGrey,
           borderRadius: BorderRadius.circular(16),
@@ -187,22 +190,22 @@ class DashboardScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 48,
-              height: 48,
+              width: 40, // Reduced icon container size
+              height: 40,
               decoration: BoxDecoration(
                 color: AppColors.primary,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
                 icon,
                 color: AppColors.white,
-                size: 24,
+                size: 20, // Reduced icon size
               ),
             ),
             
-            const SizedBox(height: 16),
+            const SizedBox(height: 12), // Reduced spacing
             
-            Flexible(
+            Expanded( // Use Expanded to prevent overflow
               child: Text(
                 title,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -216,7 +219,7 @@ class DashboardScreen extends StatelessWidget {
             
             const SizedBox(height: 4),
             
-            Flexible(
+            Expanded( // Use Expanded to prevent overflow
               child: Text(
                 description,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
