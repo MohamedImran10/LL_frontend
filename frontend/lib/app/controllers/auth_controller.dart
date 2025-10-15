@@ -62,7 +62,12 @@ class AuthController extends GetxController {
             name: userName,
             email: userEmail,
           );
-          Get.offAllNamed(AppRoutes.dashboard);
+          
+          // Only navigate to dashboard if we're not already there
+          final currentRoute = Get.currentRoute;
+          if (currentRoute != AppRoutes.dashboard) {
+            Get.offAllNamed(AppRoutes.dashboard);
+          }
         }
       }
     } catch (e) {
@@ -118,13 +123,6 @@ class AuthController extends GetxController {
         
         print('🏠 Navigating to dashboard...');
         Get.offAllNamed(AppRoutes.dashboard);
-        
-        // Clean up the auth controller after successful login
-        Future.delayed(const Duration(milliseconds: 500), () {
-          if (Get.isRegistered<AuthController>()) {
-            Get.delete<AuthController>();
-          }
-        });
       } else {
         Get.snackbar(
           'Error',
@@ -276,13 +274,8 @@ class AuthController extends GetxController {
         colorText: Colors.white,
       );
       
-      // Navigate to login and clean up the auth controller
+      // Navigate to login
       Get.offAllNamed(AppRoutes.login);
-      
-      // Remove the controller to ensure fresh state
-      if (Get.isRegistered<AuthController>()) {
-        Get.delete<AuthController>();
-      }
     } catch (e) {
       debugPrint('Logout error: $e');
     }

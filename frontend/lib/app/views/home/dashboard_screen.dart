@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../controllers/auth_controller.dart';
+import '../../services/storage_service.dart';
 import '../../utils/app_theme.dart';
+import '../../utils/app_routes.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final authController = Get.put(AuthController());
-    
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
@@ -31,9 +30,17 @@ class DashboardScreen extends StatelessWidget {
                       child: const Text('Cancel'),
                     ),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         Navigator.pop(context);
-                        authController.logout();
+                        // Clear user data and navigate to login
+                        await StorageService.to.clearUserData();
+                        Get.offAllNamed(AppRoutes.login);
+                        Get.snackbar(
+                          'Success',
+                          'Logged out successfully!',
+                          backgroundColor: Colors.green,
+                          colorText: Colors.white,
+                        );
                       },
                       child: const Text('Logout'),
                     ),
@@ -51,13 +58,19 @@ class DashboardScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Welcome message
-              Obx(() => Text(
-                'Welcome, ${authController.currentUser.value?.name ?? 'User'}!',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: AppColors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-              )),
+              FutureBuilder<String>(
+                future: _getUserName(),
+                builder: (context, snapshot) {
+                  final userName = snapshot.data ?? 'User';
+                  return Text(
+                    'Welcome, $userName!',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: AppColors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
+              ),
               
               const SizedBox(height: 8),
               
@@ -217,5 +230,14 @@ class DashboardScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<String> _getUserName() async {
+    try {
+      final userName = StorageService.to.userName;
+      return userName.isNotEmpty ? userName : 'User';
+    } catch (e) {
+      return 'User';
+    }
   }
 }
