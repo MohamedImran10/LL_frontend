@@ -97,7 +97,7 @@ class DashboardScreen extends StatelessWidget {
                       'Chat with AI to find flights',
                       Icons.search,
                       () {
-                        Get.snackbar('Info', 'AI flight search coming soon!');
+                        Get.toNamed(AppRoutes.flightSearch);
                       },
                     ),
                     _buildFeatureCard(

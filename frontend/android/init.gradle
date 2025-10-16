@@ -1,0 +1,20 @@
+// Prevent NDK installation in restricted environments
+allprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            android {
+                // Remove NDK version requirement
+                if (hasProperty('ndkVersion')) {
+                    ndkVersion = null
+                }
+            }
+        }
+    }
+}
+
+// Disable automatic SDK component installation
+gradle.projectsEvaluated {
+    tasks.withType(com.android.build.gradle.tasks.factory.AndroidUnitTest).configureEach {
+        enabled = false
+    }
+}

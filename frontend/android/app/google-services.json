@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "316756438959",
+    "project_id": "flight-agent-6b9c9",
+    "storage_bucket": "flight-agent-6b9c9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:316756438959:android:893c1c44d9aa59de52095a",
+        "android_client_info": {
+          "package_name": "com.example.frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZ0LPdEzcixwXLWF9dwmDRyxiqoB_Vte8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

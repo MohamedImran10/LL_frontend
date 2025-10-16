@@ -83,8 +83,7 @@ class LoginScreen extends StatelessWidget {
                     child: SocialLoginButton(
                       icon: Icons.g_mobiledata,
                       onPressed: () {
-                        // Google login functionality
-                        Get.snackbar('Info', 'Google login not implemented in MVP');
+                        authController.signInWithGoogle();
                       },
                     ),
                   ),

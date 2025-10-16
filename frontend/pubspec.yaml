@@ -23,6 +23,10 @@ dependencies:
   shared_preferences: ^2.2.2
   http: ^1.1.0
   email_validator: ^2.1.17
+  uuid: ^4.2.1
+  google_sign_in: ^6.2.1
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.15.3
 
 dev_dependencies:
   flutter_test:

@@ -4,6 +4,7 @@ import '../views/onboarding_screen.dart';
 import '../views/auth/login_screen.dart';
 import '../views/auth/signup_screen.dart';
 import '../views/home/dashboard_screen.dart';
+import '../views/flight/flight_search_screen.dart';
 
 class AppRoutes {
   static const String splash = '/splash';
@@ -11,6 +12,7 @@ class AppRoutes {
   static const String login = '/login';
   static const String signup = '/signup';
   static const String dashboard = '/dashboard';
+  static const String flightSearch = '/flight-search';
 
   static List<GetPage> routes = [
     GetPage(
@@ -32,6 +34,10 @@ class AppRoutes {
     GetPage(
       name: dashboard,
       page: () => const DashboardScreen(),
+    ),
+    GetPage(
+      name: flightSearch,
+      page: () => const FlightSearchScreen(),
     ),
   ];
 }

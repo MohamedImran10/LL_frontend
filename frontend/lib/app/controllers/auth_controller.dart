@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import '../models/auth.dart';
 import '../models/user.dart';
 import '../services/auth_service.dart';
+import '../services/google_signin_service.dart';
 import '../services/storage_service.dart';
 import '../utils/app_routes.dart';
 
 class AuthController extends GetxController {
   final AuthService _authService = AuthService();
+  final GoogleSignInService _googleSignInService = GoogleSignInService();
   
   // Loading states
   final RxBool isLoading = false.obs;
@@ -262,6 +264,9 @@ class AuthController extends GetxController {
 
   Future<void> logout() async {
     try {
+      // Sign out from Google if signed in
+      await _googleSignInService.signOut();
+      
       await StorageService.to.clearUserData();
       currentUser.value = null;
       clearAllForms();
@@ -278,6 +283,61 @@ class AuthController extends GetxController {
       Get.offAllNamed(AppRoutes.login);
     } catch (e) {
       debugPrint('Logout error: $e');
+    }
+  }
+
+  /// Sign in with Google
+  Future<void> signInWithGoogle() async {
+    try {
+      isLoading.value = true;
+      
+      final result = await _googleSignInService.signInWithGoogle();
+      
+      if (result != null && result['success'] == true) {
+        // Save user data to storage
+        await StorageService.to.saveToken(result['token']);
+        await StorageService.to.saveUserData({
+          'name': result['name'],
+          'email': result['email'],
+        });
+        
+        // Set current user
+        currentUser.value = User(
+          id: result['uid'],
+          name: result['name'],
+          email: result['email'],
+        );
+        
+        Get.snackbar(
+          'Success',
+          'Welcome ${result['name']}!',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        
+        // Navigate to dashboard
+        Get.offAllNamed(AppRoutes.dashboard);
+      } else if (result != null && result['success'] == false) {
+        // Show error from service
+        Get.snackbar(
+          'Error',
+          result['error'] ?? 'Failed to sign in with Google',
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 4),
+        );
+      }
+    } catch (e) {
+      debugPrint('Google Sign-In error: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to sign in with Google. Please ensure Firebase is configured.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 4),
+      );
+    } finally {
+      isLoading.value = false;
     }
   }
 

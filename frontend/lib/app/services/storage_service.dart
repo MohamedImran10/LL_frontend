@@ -50,6 +50,23 @@ class StorageService extends GetxService {
     await removeToken();
   }
 
+  // Flight agent data storage
+  Future<void> saveChatHistory(String chatData) async {
+    await _prefs?.setString('chat_history', chatData);
+  }
+
+  String? getChatHistory() {
+    return _prefs?.getString('chat_history');
+  }
+
+  Future<void> saveSearchHistory(String searchData) async {
+    await _prefs?.setString('search_history', searchData);
+  }
+
+  String? getSearchHistory() {
+    return _prefs?.getString('search_history');
+  }
+
   // Clear all data (for testing/debugging)
   Future<void> clearAll() async {
     await _prefs?.clear();
