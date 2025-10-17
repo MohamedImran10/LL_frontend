@@ -50,21 +50,47 @@ class StorageService extends GetxService {
     await removeToken();
   }
 
-  // Flight agent data storage
+  // Flight agent data storage - User-specific
   Future<void> saveChatHistory(String chatData) async {
-    await _prefs?.setString('chat_history', chatData);
+    final userEmail = this.userEmail;
+    if (userEmail.isEmpty) {
+      print('⚠️ Cannot save chat: No user logged in');
+      return;
+    }
+    print('💾 Saving chat for user: $userEmail');
+    await _prefs?.setString('chat_history_$userEmail', chatData);
   }
 
   String? getChatHistory() {
-    return _prefs?.getString('chat_history');
+    final userEmail = this.userEmail;
+    if (userEmail.isEmpty) {
+      print('⚠️ Cannot load chat: No user logged in');
+      return null;
+    }
+    print('📖 Loading chat for user: $userEmail');
+    return _prefs?.getString('chat_history_$userEmail');
   }
 
   Future<void> saveSearchHistory(String searchData) async {
-    await _prefs?.setString('search_history', searchData);
+    final userEmail = this.userEmail;
+    if (userEmail.isEmpty) return;
+    print('💾 Saving search for user: $userEmail');
+    await _prefs?.setString('search_history_$userEmail', searchData);
   }
 
   String? getSearchHistory() {
-    return _prefs?.getString('search_history');
+    final userEmail = this.userEmail;
+    if (userEmail.isEmpty) return null;
+    print('📖 Loading search for user: $userEmail');
+    return _prefs?.getString('search_history_$userEmail');
+  }
+  
+  // Clear user-specific chat and search history
+  Future<void> clearUserChatData() async {
+    final userEmail = this.userEmail;
+    if (userEmail.isEmpty) return;
+    await _prefs?.remove('chat_history_$userEmail');
+    await _prefs?.remove('search_history_$userEmail');
   }
 
   // Clear all data (for testing/debugging)

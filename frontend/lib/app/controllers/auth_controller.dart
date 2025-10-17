@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/auth.dart';
 import '../models/user.dart';
 import '../services/auth_service.dart';
+import '../services/flight_agent_service.dart';
 import '../services/google_signin_service.dart';
 import '../services/storage_service.dart';
 import '../utils/app_routes.dart';
@@ -267,10 +268,20 @@ class AuthController extends GetxController {
       // Sign out from Google if signed in
       await _googleSignInService.signOut();
       
+      // Clear user data (but keep user-specific chat history)
       await StorageService.to.clearUserData();
       currentUser.value = null;
       clearAllForms();
       resetFormKeys();
+      
+      // Clear chat history from FlightAgentService
+      try {
+        final flightAgent = Get.find<FlightAgentService>();
+        flightAgent.clearChatHistory();
+      } catch (e) {
+        // FlightAgentService might not be initialized yet
+        debugPrint('FlightAgentService not found: $e');
+      }
       
       Get.snackbar(
         'Success',

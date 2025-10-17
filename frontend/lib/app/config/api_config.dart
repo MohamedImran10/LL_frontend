@@ -1,6 +1,6 @@
 class ApiConfig {
   // Configuration for different environments
-  static const bool useLocalhost = true; // Set to true to use localhost for now
+  static const bool useLocalhost = false; // Set to false for physical device
   
   // Your development machine's IP address
   // Found automatically: 10.157.168.34
