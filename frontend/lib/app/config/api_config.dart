@@ -7,8 +7,8 @@ class ApiConfig {
   static const String localIpAddress = '10.157.168.34'; // Your actual IP address
   
   // Network timeout configurations
-  static const Duration connectTimeout = Duration(seconds: 5);
-  static const Duration receiveTimeout = Duration(seconds: 10);
+  static const Duration connectTimeout = Duration(seconds: 15);
+  static const Duration receiveTimeout = Duration(seconds: 20);
   
   static String get baseUrl {
     if (useLocalhost) {
